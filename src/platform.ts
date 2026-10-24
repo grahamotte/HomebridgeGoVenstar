@@ -17,6 +17,7 @@ import { homeKitSerialNumber } from "./serial.js";
 import { discoverSsdpDevices } from "./ssdp.js";
 import { Thermostat } from "./thermostat.js";
 import { VenstarClient } from "./venstar.js";
+import { withPluginPrefix } from "./logger.js";
 
 interface DiscoveredDevice {
   readonly id: string;
@@ -37,11 +38,14 @@ export class GoVenstarPlatform implements DynamicPlatformPlugin {
   public readonly Characteristic: typeof Characteristic;
   public readonly accessories: Map<string, PlatformAccessory> = new Map();
 
+  public readonly log: Logging;
+
   constructor(
-    public readonly log: Logging,
+    log: Logging,
     public readonly config: PlatformConfig,
     public readonly api: API
   ) {
+    this.log = withPluginPrefix(log);
     this.Service = api.hap.Service;
     this.Characteristic = api.hap.Characteristic;
 
